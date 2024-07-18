@@ -65,7 +65,7 @@ function App():JSX.Element {
             mode="multiple" 
             maxTagCount={2} 
             onChange={vals => {
-              SIMULATEDATA.defaultFamily = vals.map(o => o);
+              SIMULATEDATA.defaultFamily = vals.map(o => o).sort();
               setEnable(lastSender.current !== JSON.stringify(encodeQueryString(SIMULATEDATA)));
             }}
           >
@@ -77,7 +77,7 @@ function App():JSX.Element {
             defaultValue={[dayjs(SIMULATEDATA.defaultDate.start), dayjs(SIMULATEDATA.defaultDate.end)]} 
             onCalendarChange={([start, end]) =>{
               if(start && end){
-                SIMULATEDATA.defaultDate = { start: start.valueOf(), end: end.valueOf() }
+                SIMULATEDATA.defaultDate = { start: start.startOf('date').valueOf(), end: end.endOf('date').valueOf() }
               }
               setEnable(lastSender.current !== JSON.stringify(encodeQueryString(SIMULATEDATA)));
             }}
@@ -87,6 +87,7 @@ function App():JSX.Element {
               const senderMessage = encodeQueryString(SIMULATEDATA);
               lastSender.current = JSON.stringify(senderMessage);
               xdm.current?.send(senderMessage, iframeRef?.current?.contentWindow as Window);
+              setTimeout(()=>setEnable(false), 200)
             }}>Apply</Button>
           </Tooltip>
         </div>
