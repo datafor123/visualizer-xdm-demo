@@ -24,8 +24,11 @@ const SIMULATEDATA = {
     end: dayjs('1997-3-20').endOf('date').valueOf()
   }
 }
-
-const encodeQueryString = (data:{defaultFamily:Array<string>, defaultDate:{start:number, end: number}}) =>{
+type EncodeQueryType = {
+  defaultFamily:Array<string>, 
+  defaultDate:{start:number, end: number}
+}
+const encodeQueryString = (data:EncodeQueryType) =>{
   const { defaultFamily: p, defaultDate: d } = data;
   const sender:Array<XDMMessageDataType> = [{
     value: [[{ i: 1, v: d.start.valueOf() }, { i: 1, v: d.end.valueOf() }]],
@@ -44,11 +47,25 @@ const encodeQueryString = (data:{defaultFamily:Array<string>, defaultDate:{start
   return sender;
 };
 
+const useButtonEnable = (init:boolean)=>{
+  const [enable, setEnable] = React.useState(init);
+  const history = useRef<string>(JSON.stringify(encodeQueryString(SIMULATEDATA)));
+  const update = (sender:EncodeQueryType)=>setEnable(history.current !== JSON.stringify(encodeQueryString(sender)));
+  const commit = (sender:EncodeQueryType)=> {
+    history.current = JSON.stringify(encodeQueryString(sender));
+    setEnable(false);
+  }
+  return {
+    enable,
+    update,
+    commit
+  }
+}
+
 function App():JSX.Element {
   const iframeRef = React.createRef<HTMLIFrameElement>();
   const xdm = useRef<XMDWorker>();  
-  const [enable, setEnable] = React.useState(false);
-  const lastSender = useRef<string>(JSON.stringify(encodeQueryString(SIMULATEDATA)));
+  const { enable, update, commit } = useButtonEnable(false);
   useEffect(() => {
     xdm.current = new XMDWorker({
       onPageInitEvent: () => iframeRef?.current && xdm?.current?.send(encodeQueryString(SIMULATEDATA), iframeRef.current.contentWindow as Window, true)});
@@ -66,7 +83,7 @@ function App():JSX.Element {
             maxTagCount={2} 
             onChange={vals => {
               SIMULATEDATA.defaultFamily = vals.map(o => o).sort();
-              setEnable(lastSender.current !== JSON.stringify(encodeQueryString(SIMULATEDATA)));
+              update(SIMULATEDATA);
             }}
           >
             {SIMULATEDATA.productFamilies.map(member=> <Select.Option key={member}>{member}</Select.Option>)}
@@ -79,15 +96,14 @@ function App():JSX.Element {
               if(start && end){
                 SIMULATEDATA.defaultDate = { start: start.startOf('date').valueOf(), end: end.endOf('date').valueOf() }
               }
-              setEnable(lastSender.current !== JSON.stringify(encodeQueryString(SIMULATEDATA)));
+              update(SIMULATEDATA);
             }}
           />
           <Tooltip title="First modify your filter criteria, and then click here to submit.">
             <Button type="primary" disabled={!enable} style={{ marginLeft: 10 }} onClick={() => {
               const senderMessage = encodeQueryString(SIMULATEDATA);
-              lastSender.current = JSON.stringify(senderMessage);
               xdm.current?.send(senderMessage, iframeRef?.current?.contentWindow as Window);
-              setTimeout(()=>setEnable(false), 200)
+              commit(SIMULATEDATA);
             }}>Apply</Button>
           </Tooltip>
         </div>
