@@ -1,6 +1,7 @@
 # Communite with visualizer report via XDM 
 
 ## Install the dependencies
+Download the source code and run the following command in the root directory of the project.
 ```bash
 npm install
 ```
