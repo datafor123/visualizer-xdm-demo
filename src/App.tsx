@@ -57,7 +57,9 @@ function App():JSX.Element {
   const xdm = useRef<XDMWorker>();  
   useEffect(() => {
     xdm.current = new XDMWorker({
-      onPageInitEvent: () => xdm?.current?.send(encodeQueryString(defaults), iframeRef?.current?.contentWindow as Window, true)});
+      onPageInitEvent: () => xdm?.current?.send(encodeQueryString(defaults), iframeRef?.current?.contentWindow as Window, true)
+    });
+    return () => xdm.current?.destroy();
   });
 
   return (

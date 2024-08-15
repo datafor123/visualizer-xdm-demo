@@ -26,14 +26,16 @@ type XDMMessageDataType = {
   datatype: MemberValueTypeEnum //Parameter Data Type
 }
 
-/* DEMO */
+
 class XDMWorker {
 
     reportId:string|null;
 
+    destroy:()=>void;
+
     constructor({ onPageInitEvent = () => { } }) {
         this.reportId = null;
-        window.addEventListener('message', (msg) => {
+        const onMessage = (msg: {data:string}) => {
             const { data } = msg;
             let reportMessage;
             try { reportMessage = JSON.parse(data); } catch (d) { }
@@ -43,7 +45,9 @@ class XDMWorker {
                     onPageInitEvent();
                 }
             }
-        });
+        }
+        window.addEventListener('message', onMessage);
+        this.destroy = () => window.removeEventListener('message', onMessage);
     }
 
     /**
