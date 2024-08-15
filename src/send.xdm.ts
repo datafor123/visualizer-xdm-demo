@@ -6,7 +6,7 @@ enum DataIncludeTypeEnum {
 enum MemberValueTypeEnum { 
   STRING = 'string',
   TIMESTAMP = 'timestamp',
-  NUMBER = 'number'
+  NUMBER = 'numeric'
 }
 enum MemberFieldTypeEnum { 
   CAPTION = 'caption',
