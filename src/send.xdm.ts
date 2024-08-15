@@ -12,27 +12,22 @@ enum MemberFieldTypeEnum {
   CAPTION = 'caption',
   NAME = 'name'
 }
-
-type MemberValueType = [
-  start:{
-    i: DataIncludeTypeEnum,  
-    v: number | string,  //The value of the filter
-  },
-  end: {
-    i: DataIncludeTypeEnum,  
-    v: number | string,  
-  }
-] | string | number;
+type RangeTupleCell = {
+  i: DataIncludeTypeEnum,  
+  v: number | string,  //The value of the filter
+};
+type RangeTule = [RangeTupleCell, RangeTupleCell];
+type MemberValueType = RangeTule | string | number;
 
 type XDMMessageDataType = {
-  value: Array<MemberValueType>,
-  name: string,
-  type: MemberFieldTypeEnum,
-  datatype: MemberValueTypeEnum
+  value: Array<MemberValueType>, //Parameter Value
+  name: string,  //Parameter Name
+  type: MemberFieldTypeEnum,  //Parameter Type
+  datatype: MemberValueTypeEnum //Parameter Data Type
 }
 
 /* DEMO */
-class XMDWorker {
+class XDMWorker {
 
     reportId:string|null;
 
@@ -43,7 +38,7 @@ class XMDWorker {
             let reportMessage;
             try { reportMessage = JSON.parse(data); } catch (d) { }
             if (reportMessage) {
-                if (reportMessage.event == 'visualizerReportFileLoaded') {//This is the message of the report initialization completion. It will carry an id value, which is the unique identifier of the report. Subsequent messages should carry this id value, otherwise the report will not be processed.
+                if (reportMessage.event === 'visualizerReportFileLoaded') {//This is the message of the report initialization completion. It will carry an id value, which is the unique identifier of the report. Subsequent messages should carry this id value, otherwise the report will not be processed.
                     this.reportId = reportMessage.id;
                     onPageInitEvent();
                 }
@@ -59,7 +54,7 @@ class XMDWorker {
      * @returns 
      */
     send(data:Array<XDMMessageDataType>, target:Window, init:boolean = false) {
-        if (!this.reportId) {
+        if (!this.reportId || !target) {
             return;
         }
         const message = {
@@ -73,6 +68,24 @@ class XMDWorker {
 
 }
 
-export default XMDWorker;
+export const packageDaterangeMessage = (parameterName:string, parameterValue:Array<RangeTule>):Array<XDMMessageDataType> => {
+  return [{
+    value: parameterValue,
+    name: parameterName,
+    type: MemberFieldTypeEnum.NAME,
+    datatype: MemberValueTypeEnum.TIMESTAMP
+  }];
+}
+
+export const packageNormalMessage = (parameterName:string, parameterValue:Array<string>):Array<XDMMessageDataType> => {
+  return [{
+    value: parameterValue,
+    name: parameterName,
+    type: MemberFieldTypeEnum.NAME,
+    datatype: MemberValueTypeEnum.STRING
+  }];
+}
+
+export default XDMWorker;
 export type {XDMMessageDataType, MemberValueType};
 export {DataIncludeTypeEnum, MemberValueTypeEnum, MemberFieldTypeEnum};
