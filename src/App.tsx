@@ -10,7 +10,7 @@ const ctrlParams = [
 ];
 
 // The address of the report to be embedded
-const reportAddr = `https://aws.datafor.com.cn:448/datafor/plugin/datafor/api/share/open?shareid=Z0ZrY1g2XGDqY1kxKIDxeI2`;
+const reportAddr = `https://aws.datafor.com.cn:448/datafor/plugin/datafor/api/share/open?shareid=hrpHe8ZLIm9QLnZ2XIRofIpy`;
 
 /**
  * 
@@ -22,8 +22,8 @@ const reportAddr = `https://aws.datafor.com.cn:448/datafor/plugin/datafor/api/sh
  * 
  */
 const PARAMETERNAME = {
-  productFamily: '[product_class].[hierarchy_product_family].[product_family]',
-  date: '[time_by_day].[AGG_the_date].[the_date@@DAYS]' 
+  productFamily: '[product_class].[hierarchy_product_family1].[product_family]',
+  date: '[time_by_day].[AGG_the_date].[the_date]' 
 }
 
  
