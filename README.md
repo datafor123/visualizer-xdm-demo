@@ -1,4 +1,4 @@
-# Communite with visualizer report via XDM 
+# Communite with visualizer report via XDM (ReactJS Version)
 
 ## Install the dependencies
 Download the source code and run the following command in the root directory of the project.
