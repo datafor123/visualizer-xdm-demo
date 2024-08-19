@@ -45,10 +45,11 @@ const defaults = {
 
 const encodeQueryString = (data:PanelSelectedProps) =>{
   const { family: p, date: d } = data;
-  return [
+  const sender = [
     ...packageDaterangeMessage(PARAMETERNAME.date, [[{ i: 1, v: d.start.valueOf() }, { i: 1, v: d.end.valueOf() }]]), 
-    ...packageNormalMessage(PARAMETERNAME.productFamily, [...p])
-  ]; 
+  ];
+  if(p.length) sender.push(...packageNormalMessage(PARAMETERNAME.productFamily, [...p.map(o=>o)]));
+  return sender;
 };
 
 
