@@ -1,4 +1,9 @@
 # Communite with visualizer report via XDM (ReactJS Version)
+This repository contains the source code for the ReactJS version of the Communite with visualizer report via XDM app.
+
+If you are looking for the Angular version of the app, please visit [this repository](https://github.com/datafor123/visualizer-xdm-demo-angular).
+
+If you are looking for the VueJS version of the app, please visit [this repository](https://github.com/datafor123/visualizer-xdm-demo-vue3). 
 
 ## Install the dependencies
 Download the source code and run the following command in the root directory of the project.
